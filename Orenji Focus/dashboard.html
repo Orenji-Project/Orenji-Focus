@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orenji Focus | Dashboard</title>
+  <link rel="stylesheet" href="../../Orenji%20core/css/variables.css">
+  <link rel="stylesheet" href="../../Orenji%20core/css/core.css">
+  <link rel="stylesheet" href="../../Orenji%20core/css/layout.css">
+  <link rel="stylesheet" href="../../Orenji%20core/css/components.css">
+  <link rel="stylesheet" href="../../Orenji%20core/css/themes.css">
+  <link rel="stylesheet" href="../../Orenji%20core/css/animations.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body data-app="focus" data-page="dashboard">
+    <header class="main-header">
+        <div class="container header-row">
+            <a class="brand" href="index.html"><span class="brand-mark">OF</span><span>Orenji Focus</span></a>
+            <nav>
+                <a href="index.html">Inicio</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="configuracoes.html">Configuracoes</a>
+            </nav>
+            <button class="icon-button" data-theme-toggle aria-label="Alternar tema">◐</button>
+        </div>
+    </header>
+
+    <main class="container page-section">
+        <section class="dashboard-grid">
+            <article class="timer-card glass-card" data-focus-shell>
+                <div class="section-header">
+                    <span class="eyebrow" data-method-label>Pomodoro</span>
+                    <h1 data-timer-state>Foco</h1>
+                </div>
+                <div class="timer-display" data-timer-display>25:00</div>
+                <form class="method-picker" data-focus-method-form>
+                    <label>Metodo de foco
+                        <select name="method" data-focus-method></select>
+                    </label>
+                    <label>Habito ligado
+                        <select name="habit" data-linked-habit></select>
+                    </label>
+                </form>
+                <div class="timer-actions">
+                    <button class="button" data-timer-start>Iniciar</button>
+                    <button class="button button-secondary" data-timer-pause>Pausar</button>
+                    <button class="button button-ghost" data-timer-reset>Resetar</button>
+                </div>
+                <label class="focus-toggle"><input type="checkbox" data-focus-mode> Focus Mode</label>
+            </article>
+
+            <aside class="stack secondary-panel">
+                <article class="glass-card stat-card">
+                    <span>Total focado</span>
+                    <strong data-total-focus>0 min</strong>
+                </article>
+                <article class="glass-card">
+                    <div class="section-header compact">
+                        <h2>Tarefas rapidas</h2>
+                    </div>
+                    <form class="inline-form" data-task-form>
+                        <input type="text" name="task" placeholder="Nova tarefa" required>
+                        <button class="button" type="submit">Adicionar</button>
+                    </form>
+                    <ul class="item-list" data-task-list></ul>
+                </article>
+                <article class="glass-card">
+                    <div class="section-header compact">
+                        <h2>Habitos ligados</h2>
+                        <p>Habitos que podem receber progresso deste metodo.</p>
+                    </div>
+                    <div class="linked-list" data-focus-linked-habits></div>
+                    <a class="button button-secondary wide-link" href="../Orenji%20Habit/dashboard.html">Abrir Habit</a>
+                </article>
+            </aside>
+        </section>
+
+        <section class="glass-card secondary-panel">
+            <div class="section-header compact">
+                <h2>Criar metodo de foco</h2>
+                <p>Define um ritmo proprio para estudar, trabalhar ou recuperar energia.</p>
+            </div>
+            <form class="custom-method-form" data-custom-focus-form>
+                <input type="text" name="name" placeholder="Nome do metodo" required>
+                <input type="number" name="focusMinutes" min="1" max="240" value="25" aria-label="Minutos de foco" required>
+                <input type="number" name="breakMinutes" min="0" max="120" value="5" aria-label="Minutos de pausa" required>
+                <input type="number" name="cycles" min="1" max="12" value="1" aria-label="Ciclos" required>
+                <button class="button" type="submit">Guardar metodo</button>
+            </form>
+        </section>
+
+        <section class="glass-card secondary-panel">
+            <div class="section-header compact">
+                <h2>Sessoes concluidas</h2>
+                <p>Historico guardado localmente neste dispositivo.</p>
+            </div>
+            <div class="session-list" data-session-list></div>
+        </section>
+    </main>
+
+    <script src="../../Orenji%20core/js/theme.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="../Orenji%20Shared/js/integration.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
