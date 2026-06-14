@@ -29,18 +29,3 @@ e este projeto segue [Versionamento Semântico](https://semver.org/pt-BR/).
 - Comportamento responsivo de elementos header
 - Sincronização de funcionalidades entre versão pública e desenvolvimento
 
----
-
-## Como Contribuir
-
-Ao fazer alterações, atualize este changelog:
-- Use o formato já estabelecido
-- Agrupe mudanças por tipo: `✨ Adicionado`, `🎨 Melhorado`, `🔧 Corrigido`, `⚠️ Descontinuado`, `🗑️ Removido`
-- Sempre mantenha a data ISO (YYYY-MM-DD)
-
-## Versionamento
-
-Este projeto segue **Versionamento Semântico**:
-- **MAJOR** (primeira versão): mudanças incompatíveis com versões anteriores
-- **MINOR** (segunda versão): novas funcionalidades compatíveis
-- **PATCH** (terceira versão): correções de bugs
