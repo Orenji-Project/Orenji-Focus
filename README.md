@@ -29,21 +29,7 @@ Aplicação para rastrear e construir novos hábitos positivos.
 ### Orenji Shared
 Biblioteca compartilhada de componentes e utilitários reutilizáveis entre as aplicações.
 
-## 🚀 Como Começar
 
-1. Clone o repositório:
-```bash
-git clone https://github.com/fallenmster19/Orenji-Focus-Orenji-Habit-dev.git
-cd Orenji-Focus-Orenji-Habit-dev
-```
-
-2. Navegue para o módulo desejado:
-```bash
-cd "Orenji Focus"    # ou
-cd "Orenji Habit"
-```
-
-3. Abra os arquivos no seu navegador ou editor de código preferido.
 
 ## 📝 Desenvolvimento
 
