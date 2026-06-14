@@ -35,7 +35,7 @@ function initFocusDashboard() {
         mode = 'focus';
         completedCycles = 0;
         remaining = selectedMethod.focusMinutes * 60;
-        FocusUI.setTimer(remaining, mode);
+        FocusUI.setTimer(remaining, selectedMethod.name);
     };
 
     const saveCompletedSession = () => {
@@ -75,7 +75,7 @@ function initFocusDashboard() {
             }
             stopTimer();
         }
-        FocusUI.setTimer(remaining, mode);
+        FocusUI.setTimer(remaining, selectedMethod.name);
     };
 
     function renderMethodOptions() {
@@ -84,7 +84,7 @@ function initFocusDashboard() {
             <option value="${method.id}">${method.name} · ${method.focusMinutes}/${method.breakMinutes} · ${method.cycles} ciclo${Number(method.cycles) === 1 ? '' : 's'}</option>
         `).join('');
         methodSelect.value = selectedMethod.id;
-        if (methodLabel) methodLabel.textContent = selectedMethod.name;
+        if (methodLabel) methodLabel.textContent = 'Método de foco:';
     }
 
     function renderHabitOptions() {
@@ -178,7 +178,7 @@ function initFocusDashboard() {
     renderMethodOptions();
     renderHabitOptions();
     renderLinkedHabits();
-    FocusUI.setTimer(remaining, mode);
+    FocusUI.setTimer(remaining, selectedMethod.name);
     FocusUI.renderSessions();
     renderTasks();
 }

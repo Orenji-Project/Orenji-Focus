@@ -35,12 +35,12 @@ const FocusUI = {
         list.querySelectorAll('[data-task-remove]').forEach(button => button.addEventListener('click', () => onRemove(button.dataset.taskRemove)));
     },
 
-    setTimer(seconds, mode) {
+    setTimer(seconds, timerTitle) {
         const display = document.querySelector('[data-timer-display]');
         const state = document.querySelector('[data-timer-state]');
         const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
         const secs = String(seconds % 60).padStart(2, '0');
         if (display) display.textContent = `${mins}:${secs}`;
-        if (state) state.textContent = mode === 'focus' ? 'Foco' : 'Pausa';
+        if (state) state.textContent = timerTitle;
     }
 };
