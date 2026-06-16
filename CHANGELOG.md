@@ -34,15 +34,6 @@ e este projeto segue [Versionamento Semântico](https://semver.org/pt-BR/).
 ### Corrigido
 - Comportamento responsivo de elementos header.
 
----
-
-## Como Contribuir
-
-Ao fazer alterações, atualize este changelog:
-- Use o formato já estabelecido.
-- Agrupe mudanças por tipo: `Adicionado`, `Alterado`, `Corrigido`, `Removido`.
-- Sempre mantenha a data ISO (YYYY-MM-DD).
-
 ## Versionamento
 
 Este projeto segue **Versionamento Semântico**:
