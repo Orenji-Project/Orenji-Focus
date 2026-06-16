@@ -1,6 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
     FocusStorage.init();
     window.OrenjiShared?.init();
+    window.OrenjiTasks?.init();
     FocusTheme.init();
     FocusSettings.init();
 
@@ -10,6 +11,11 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     if (document.body.dataset.page === 'dashboard') initFocusDashboard();
+    if (document.body.dataset.page === 'sessions') {
+        FocusUI.renderSessions();
+        FocusUI.renderSessionSummary();
+    }
+    if (document.body.dataset.page === 'tasks') window.OrenjiTasks?.mountAll();
 });
 
 function initFocusDashboard() {
@@ -24,6 +30,7 @@ function initFocusDashboard() {
     const methodSelect = document.querySelector('[data-focus-method]');
     const linkedHabitSelect = document.querySelector('[data-linked-habit]');
     const methodLabel = document.querySelector('[data-method-label]');
+    const focusModeSummary = document.querySelector('[data-focus-mode-summary]');
 
     const stopTimer = () => {
         clearInterval(intervalId);
@@ -36,6 +43,7 @@ function initFocusDashboard() {
         completedCycles = 0;
         remaining = selectedMethod.focusMinutes * 60;
         FocusUI.setTimer(remaining, selectedMethod.name);
+        renderFocusModeSummary();
     };
 
     const saveCompletedSession = () => {
@@ -54,6 +62,7 @@ function initFocusDashboard() {
         FocusStorage.saveSessions(sessions);
         if (session.linkedHabitId) OrenjiShared.completeHabitToday(session.linkedHabitId, session);
         FocusUI.renderSessions();
+        FocusUI.renderSessionSummary();
         renderLinkedHabits();
     };
 
@@ -94,6 +103,17 @@ function initFocusDashboard() {
             '<option value="">Sem habito ligado</option>',
             ...habits.map(habit => `<option value="${habit.id}">${habit.name}</option>`)
         ].join('');
+        renderFocusModeSummary();
+    }
+
+    function renderFocusModeSummary() {
+        if (!focusModeSummary) return;
+        const linkedHabit = OrenjiShared.getHabits().find(habit => habit.id === linkedHabitSelect?.value);
+        focusModeSummary.innerHTML = `
+            <span>${selectedMethod.name}</span>
+            <span>${selectedMethod.focusMinutes} min foco</span>
+            <span>${linkedHabit?.name || 'Sem habito ligado'}</span>
+        `;
     }
 
     function renderLinkedHabits() {
@@ -126,30 +146,14 @@ function initFocusDashboard() {
         renderMethodOptions();
         resetTimer();
         renderLinkedHabits();
+        renderFocusModeSummary();
+    });
+    linkedHabitSelect?.addEventListener('change', () => {
+        renderFocusModeSummary();
     });
     document.querySelector('[data-focus-mode]')?.addEventListener('change', event => {
         document.body.classList.toggle('focus-mode', event.target.checked);
     });
-
-    document.querySelector('[data-task-form]')?.addEventListener('submit', event => {
-        event.preventDefault();
-        const input = event.currentTarget.task;
-        const tasks = FocusStorage.getTasks();
-        tasks.unshift({ id: crypto.randomUUID(), title: input.value.trim(), completed: false, createdAt: new Date().toISOString() });
-        FocusStorage.saveTasks(tasks);
-        input.value = '';
-        renderTasks();
-    });
-
-    function renderTasks() {
-        FocusUI.renderTasks(id => {
-            FocusStorage.saveTasks(FocusStorage.getTasks().map(task => task.id === id ? { ...task, completed: !task.completed } : task));
-            renderTasks();
-        }, id => {
-            FocusStorage.saveTasks(FocusStorage.getTasks().filter(task => task.id !== id));
-            renderTasks();
-        });
-    }
 
     document.querySelector('[data-custom-focus-form]')?.addEventListener('submit', event => {
         event.preventDefault();
@@ -180,5 +184,7 @@ function initFocusDashboard() {
     renderLinkedHabits();
     FocusUI.setTimer(remaining, selectedMethod.name);
     FocusUI.renderSessions();
-    renderTasks();
+    FocusUI.renderSessionSummary();
+    renderFocusModeSummary();
+    window.OrenjiTasks?.mountAll();
 }

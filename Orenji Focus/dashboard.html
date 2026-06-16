@@ -20,6 +20,8 @@
             <nav>
                 <a href="index.html">Inicio</a>
                 <a href="dashboard.html">Dashboard</a>
+                <a href="sessoes.html">Sessoes</a>
+                <a href="tasks.html">Tarefas</a>
                 <a href="configuracoes.html">Configuracoes</a>
             </nav>
             <button class="icon-button" data-theme-toggle aria-label="Alternar tema">◐</button>
@@ -34,14 +36,15 @@
                     <h1 data-timer-state>Pomodoro 25/5</h1>
                 </div>
                 <div class="timer-display" data-timer-display>25:00</div>
-                <form class="method-picker" data-focus-method-form>
-                    <label>Metodo de foco
+                <form class="method-picker themed-picker" data-focus-method-form>
+                    <label class="timer-select-card">Metodo de foco
                         <select name="method" data-focus-method></select>
                     </label>
-                    <label>Habito ligado
+                    <label class="timer-select-card">Habito ligado
                         <select name="habit" data-linked-habit></select>
                     </label>
                 </form>
+                <div class="focus-mode-summary" data-focus-mode-summary></div>
                 <div class="timer-actions">
                     <button class="button" data-timer-start>Iniciar</button>
                     <button class="button button-secondary" data-timer-pause>Pausar</button>
@@ -51,20 +54,6 @@
             </article>
 
             <aside class="stack secondary-panel">
-                <article class="glass-card stat-card">
-                    <span>Total focado</span>
-                    <strong data-total-focus>0 min</strong>
-                </article>
-                <article class="glass-card">
-                    <div class="section-header compact">
-                        <h2>Tarefas rapidas</h2>
-                    </div>
-                    <form class="inline-form" data-task-form>
-                        <input type="text" name="task" placeholder="Nova tarefa" required>
-                        <button class="button" type="submit">Adicionar</button>
-                    </form>
-                    <ul class="item-list" data-task-list></ul>
-                </article>
                 <article class="glass-card">
                     <div class="section-header compact">
                         <h2>Habitos ligados</h2>
