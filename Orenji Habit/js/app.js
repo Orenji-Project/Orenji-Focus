@@ -1,7 +1,6 @@
 window.addEventListener('DOMContentLoaded', () => {
     HabitStorage.init();
     window.OrenjiShared?.init();
-    window.OrenjiTasks?.init();
     HabitTheme.init();
     HabitSettings.init();
 
@@ -12,8 +11,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (document.body.dataset.page === 'dashboard') {
         initHabitDashboard();
-    } else if (document.body.dataset.page === 'tasks') {
-        window.OrenjiTasks?.mountAll();
     } else {
         HabitUI.renderDashboard(HabitStorage.getHabits(), {});
     }
