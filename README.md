@@ -42,6 +42,11 @@ Os estilos partilhados foram consolidados no repositório `Orenji-Project/Orenji
 
 As aplicações são desenvolvidas com tecnologias web padrão (HTML, CSS, JavaScript), facilitando a manutenção e contribuição.
 
+## Branches
+
+- `main`: versão estável para apresentação.
+- `dev`: continuação do desenvolvimento.
+
 ## 📄 Licença
 
 Este projeto está privado. Todos os direitos reservados.
