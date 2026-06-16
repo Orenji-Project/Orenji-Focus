@@ -5,7 +5,7 @@ Um projeto de desenvolvimento para duas aplicações web complementares: **Orenj
 ## 📁 Estrutura do Projeto
 
 ```
-Orenji-Focus-Orenji-Habit-dev/
+Orenji-Focus-Orenji-Habit/
 ├── Orenji Focus/          # Aplicação de gerenciamento de foco
 ├── Orenji Habit/          # Aplicação de rastreamento de hábitos
 ├── Orenji Shared/         # Componentes e utilitários compartilhados
@@ -23,11 +23,18 @@ Orenji-Focus-Orenji-Habit-dev/
 ### Orenji Focus
 Ferramenta para otimizar sua produtividade e manter o foco em tarefas importantes.
 
+Inclui dashboard, métodos de foco, sessões concluídas, resumo visual e tarefas ligadas a hábitos.
+
 ### Orenji Habit
 Aplicação para rastrear e construir novos hábitos positivos.
 
+Inclui dashboard, tarefas e integração com sessões de foco.
+
 ### Orenji Shared
 Biblioteca compartilhada de componentes e utilitários reutilizáveis entre as aplicações.
+
+### Orenji Styles
+Os estilos partilhados foram consolidados no repositório `Orenji-Project/Orenji-styles`.
 
 
 
