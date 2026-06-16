@@ -33,7 +33,7 @@ const FocusUI = {
             <article class="session-item">
                 <div>
                     <strong>${session.methodName || (session.type === 'focus' ? 'Foco' : 'Pausa')}</strong><br>
-                    <span>${new Date(session.completedAt).toLocaleDateString('pt-PT')}${session.linkedHabitId ? ' · habit ligado' : ''}</span>
+                    <span>${new Date(session.completedAt).toLocaleDateString('pt-PT')}</span>
                 </div>
                 <strong>${this.formatMinutes(session.duration)}</strong>
             </article>
@@ -100,11 +100,10 @@ const FocusUI = {
                 return acc;
             }, {});
             const topMethod = Object.entries(methodCounts).sort((a, b) => b[1] - a[1])[0];
-            const linkedSessions = sessions.filter(session => session.linkedHabitId).length;
             const lastSession = sessions[0];
             insightsTarget.innerHTML = [
                 ['Metodo mais usado', topMethod ? `${topMethod[0]} · ${this.formatMinutes(topMethod[1])}` : 'Sem dados'],
-                ['Sessoes com habito', `${linkedSessions} de ${sessions.length}`],
+                ['Dias ativos', `${focusDays}`],
                 ['Ultima sessao', lastSession ? `${lastSession.methodName || 'Foco'} · ${new Date(lastSession.completedAt).toLocaleDateString('pt-PT')}` : 'Sem dados'],
                 ['Total acumulado', this.formatMinutes(total)]
             ].map(([label, value]) => `
@@ -116,15 +115,25 @@ const FocusUI = {
         }
     },
 
+    escape(value) {
+        const div = document.createElement('div');
+        div.textContent = value || '';
+        return div.innerHTML;
+    },
+
     renderTasks(onToggle, onRemove) {
         const list = document.querySelector('[data-task-list]');
         if (!list) return;
-        const tasks = FocusStorage.getTasks();
+        const tasks = FocusStorage.getTasks().sort((a, b) => Number(a.completed) - Number(b.completed) || new Date(b.createdAt) - new Date(a.createdAt));
+        if (!tasks.length) {
+            list.innerHTML = '<li class="empty-state">Ainda nao ha tarefas no Focus.</li>';
+            return;
+        }
         list.innerHTML = tasks.map(task => `
             <li class="list-item">
-                <button class="button button-ghost" data-task-toggle="${task.id}">${task.completed ? 'Feita' : 'Fazer'}</button>
-                <span class="${task.completed ? 'done' : ''}">${task.title}</span>
-                <button class="icon-button" data-task-remove="${task.id}" aria-label="Remover tarefa">×</button>
+                <button class="button button-ghost" data-task-toggle="${this.escape(task.id)}">${task.completed ? 'Feita' : 'Fazer'}</button>
+                <span class="${task.completed ? 'done' : ''}">${this.escape(task.title)}</span>
+                <button class="icon-button" data-task-remove="${this.escape(task.id)}" aria-label="Remover tarefa">×</button>
             </li>
         `).join('');
         list.querySelectorAll('[data-task-toggle]').forEach(button => button.addEventListener('click', () => onToggle(button.dataset.taskToggle)));

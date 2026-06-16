@@ -1,53 +1,36 @@
-# Orenji Focus & Orenji Habit
+# Orenji Focus
 
-Um projeto de desenvolvimento para duas aplicações web complementares: **Orenji Focus** (gerenciamento de foco e produtividade) e **Orenji Habit** (rastreamento de hábitos).
+Aplicação web para gestão de foco, produtividade e sessões de estudo/trabalho.
 
-## 📁 Estrutura do Projeto
+## Estrutura
 
 ```
-Orenji-Focus-Orenji-Habit/
-├── Orenji Focus/          # Aplicação de gerenciamento de foco
-├── Orenji Habit/          # Aplicação de rastreamento de hábitos
-├── Orenji Shared/         # Componentes e utilitários compartilhados
+Orenji-Focus/
+├── Orenji Focus/          # Aplicação de foco
+├── CHANGELOG.md
+├── LICENSE
 └── README.md
 ```
 
-## 🛠️ Tecnologias
+## Funcionalidades
 
-- **JavaScript** (41.1%) - Lógica da aplicação
-- **CSS** (33.8%) - Estilos e design
-- **HTML** (25.1%) - Estrutura das páginas
+- Dashboard com timer de foco e pausas.
+- Métodos de foco locais, incluindo Pomodoro, Flowtime e Deep Work.
+- Criação de métodos personalizados.
+- Histórico e resumo visual de sessões concluídas.
+- Tarefas locais do Focus.
+- Configurações e tema guardados no dispositivo.
 
-## 📋 Características
+## Desenvolvimento
 
-### Orenji Focus
-Ferramenta para otimizar sua produtividade e manter o foco em tarefas importantes.
-
-Inclui dashboard, métodos de foco, sessões concluídas, resumo visual e tarefas ligadas a hábitos.
-
-### Orenji Habit
-Aplicação para rastrear e construir novos hábitos positivos.
-
-Inclui dashboard, tarefas e integração com sessões de foco.
-
-### Orenji Shared
-Biblioteca compartilhada de componentes e utilitários reutilizáveis entre as aplicações.
-
-### Orenji Styles
-Os estilos partilhados foram consolidados no repositório `Orenji-Project/Orenji-styles`.
-
-
-
-## 📝 Desenvolvimento
-
-As aplicações são desenvolvidas com tecnologias web padrão (HTML, CSS, JavaScript), facilitando a manutenção e contribuição.
+A app usa HTML, CSS e JavaScript puros. Os estilos partilhados continuam a ser carregados a partir do repositório irmão `Orenji-styles`.
 
 ## Branches
 
 - `main`: versão estável para apresentação.
 - `dev`: continuação do desenvolvimento.
 
-## 📄 Licença
+## Licença
 
 Este projeto está privado. Todos os direitos reservados.
 

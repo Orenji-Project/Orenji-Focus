@@ -1,7 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
     FocusStorage.init();
-    window.OrenjiShared?.init();
-    window.OrenjiTasks?.init();
     FocusTheme.init();
     FocusSettings.init();
 
@@ -15,11 +13,11 @@ window.addEventListener('DOMContentLoaded', () => {
         FocusUI.renderSessions();
         FocusUI.renderSessionSummary();
     }
-    if (document.body.dataset.page === 'tasks') window.OrenjiTasks?.mountAll();
+    if (document.body.dataset.page === 'tasks') initFocusTasks();
 });
 
 function initFocusDashboard() {
-    const methods = () => OrenjiShared.getFocusMethods();
+    const methods = () => FocusStorage.getMethods();
     const getMethod = id => methods().find(method => method.id === id) || methods()[0];
     let selectedMethod = methods()[0];
     let mode = 'focus';
@@ -28,7 +26,6 @@ function initFocusDashboard() {
     let intervalId = null;
 
     const methodSelect = document.querySelector('[data-focus-method]');
-    const linkedHabitSelect = document.querySelector('[data-linked-habit]');
     const methodLabel = document.querySelector('[data-method-label]');
     const focusModeSummary = document.querySelector('[data-focus-mode-summary]');
 
@@ -55,15 +52,12 @@ function initFocusDashboard() {
             duration: selectedMethod.focusMinutes,
             methodId: selectedMethod.id,
             methodName: selectedMethod.name,
-            linkedHabitId: linkedHabitSelect?.value || '',
             completedAt: new Date().toISOString()
         };
         sessions.push(session);
         FocusStorage.saveSessions(sessions);
-        if (session.linkedHabitId) OrenjiShared.completeHabitToday(session.linkedHabitId, session);
         FocusUI.renderSessions();
         FocusUI.renderSessionSummary();
-        renderLinkedHabits();
     };
 
     const tick = () => {
@@ -96,40 +90,14 @@ function initFocusDashboard() {
         if (methodLabel) methodLabel.textContent = 'Método de foco:';
     }
 
-    function renderHabitOptions() {
-        if (!linkedHabitSelect) return;
-        const habits = OrenjiShared.getHabits();
-        linkedHabitSelect.innerHTML = [
-            '<option value="">Sem habito ligado</option>',
-            ...habits.map(habit => `<option value="${habit.id}">${habit.name}</option>`)
-        ].join('');
-        renderFocusModeSummary();
-    }
-
     function renderFocusModeSummary() {
         if (!focusModeSummary) return;
-        const linkedHabit = OrenjiShared.getHabits().find(habit => habit.id === linkedHabitSelect?.value);
         focusModeSummary.innerHTML = `
             <span>${selectedMethod.name}</span>
             <span>${selectedMethod.focusMinutes} min foco</span>
-            <span>${linkedHabit?.name || 'Sem habito ligado'}</span>
+            <span>${selectedMethod.breakMinutes} min pausa</span>
+            <span>${selectedMethod.cycles} ciclo${Number(selectedMethod.cycles) === 1 ? '' : 's'}</span>
         `;
-    }
-
-    function renderLinkedHabits() {
-        const target = document.querySelector('[data-focus-linked-habits]');
-        if (!target) return;
-        const habits = OrenjiShared.getLinkedHabitsForFocusMethod(selectedMethod.id);
-        if (!habits.length) {
-            target.innerHTML = '<p class="empty-state">Nenhum habito ligado a este metodo.</p>';
-            return;
-        }
-        target.innerHTML = habits.map(habit => `
-            <article class="mini-item">
-                <strong>${habit.name}</strong>
-                <span>${habit.methodName || 'Metodo de habito por definir'}</span>
-            </article>
-        `).join('');
     }
 
     document.querySelector('[data-timer-start]')?.addEventListener('click', () => {
@@ -145,10 +113,6 @@ function initFocusDashboard() {
         selectedMethod = getMethod(event.target.value);
         renderMethodOptions();
         resetTimer();
-        renderLinkedHabits();
-        renderFocusModeSummary();
-    });
-    linkedHabitSelect?.addEventListener('change', () => {
         renderFocusModeSummary();
     });
     document.querySelector('[data-focus-mode]')?.addEventListener('change', event => {
@@ -168,7 +132,7 @@ function initFocusDashboard() {
             description: 'Metodo de foco personalizado.',
             isDefault: false
         };
-        OrenjiShared.saveFocusMethods([...methods(), nextMethod]);
+        FocusStorage.saveMethods([...methods(), nextMethod]);
         selectedMethod = nextMethod;
         form.reset();
         fields.focusMinutes.value = 25;
@@ -176,15 +140,58 @@ function initFocusDashboard() {
         fields.cycles.value = 1;
         renderMethodOptions();
         resetTimer();
-        renderLinkedHabits();
     });
 
     renderMethodOptions();
-    renderHabitOptions();
-    renderLinkedHabits();
     FocusUI.setTimer(remaining, selectedMethod.name);
     FocusUI.renderSessions();
     FocusUI.renderSessionSummary();
     renderFocusModeSummary();
-    window.OrenjiTasks?.mountAll();
+}
+
+function initFocusTasks() {
+    const root = document.querySelector('[data-tasks-component]');
+    if (!root) return;
+    root.classList.add('tasks-component');
+    root.innerHTML = `
+        <div class="section-header compact">
+            <h2>Tarefas Focus</h2>
+            <p>Organiza tarefas de foco guardadas localmente nesta app.</p>
+        </div>
+        <form class="tasks-form inline-form" data-focus-task-form>
+            <input type="text" name="title" placeholder="Nova tarefa" required>
+            <button class="button" type="submit">Adicionar</button>
+        </form>
+        <ul class="item-list tasks-list" data-task-list></ul>
+    `;
+
+    const render = () => FocusUI.renderTasks(
+        id => {
+            FocusStorage.saveTasks(FocusStorage.getTasks().map(task => {
+                if (task.id !== id) return task;
+                const completed = !task.completed;
+                return { ...task, completed, completedAt: completed ? new Date().toISOString() : '' };
+            }));
+            render();
+        },
+        id => {
+            FocusStorage.saveTasks(FocusStorage.getTasks().filter(task => task.id !== id));
+            render();
+        }
+    );
+
+    root.querySelector('[data-focus-task-form]')?.addEventListener('submit', event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const title = form.elements.title.value.trim();
+        if (!title) return;
+        FocusStorage.saveTasks([
+            { id: crypto.randomUUID(), title, completed: false, createdAt: new Date().toISOString(), completedAt: '' },
+            ...FocusStorage.getTasks()
+        ]);
+        form.reset();
+        render();
+    });
+
+    render();
 }
