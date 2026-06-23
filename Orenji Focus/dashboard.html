@@ -11,12 +11,13 @@
   <link rel="stylesheet" href="../../Orenji-styles/css/components.css">
   <link rel="stylesheet" href="../../Orenji-styles/css/themes.css">
   <link rel="stylesheet" href="../../Orenji-styles/css/animations.css">
+  <link rel="stylesheet" href="../../Orenji-styles/css/concepts/orenji-focus-theme.css">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body data-app="focus" data-page="dashboard">
     <header class="main-header">
         <div class="container header-row">
-            <a class="brand" href="index.html"><span class="brand-mark"><img src="assets/logo-clean.png" alt="" aria-hidden="true"></span><span>Orenji Focus</span></a>
+            <a class="brand" href="index.html"><span class="brand-mark"><img src="assets/logo-clean.png" alt="" aria-hidden="true"></span><span class="brand-copy"><span class="brand-name">Orenji</span><span class="brand-focus">Focus</span></span></a>
             <nav>
                 <a href="index.html">Inicio</a>
                 <a href="dashboard.html">Dashboard</a>
@@ -28,69 +29,166 @@
         </div>
     </header>
 
-    <main class="container page-section">
-        <section class="dashboard-grid">
-            <article class="timer-card glass-card" data-focus-shell>
-                <div class="section-header">
-                    <span class="eyebrow" data-method-label>Método de foco:</span>
-                    <h1 data-timer-state>Pomodoro 25/5</h1>
-                </div>
-                <div class="timer-display" data-timer-display>25:00</div>
-                <form class="method-picker themed-picker" data-focus-method-form>
-                    <label class="timer-select-card">Metodo de foco
-                        <select name="method" data-focus-method></select>
-                    </label>
-                    <label class="timer-select-card">Habito ligado
-                        <select name="habit" data-linked-habit></select>
-                    </label>
-                </form>
-                <div class="focus-mode-summary" data-focus-mode-summary></div>
-                <div class="timer-actions">
-                    <button class="button" data-timer-start>Iniciar</button>
-                    <button class="button button-secondary" data-timer-pause>Pausar</button>
-                    <button class="button button-ghost" data-timer-reset>Resetar</button>
-                </div>
-                <label class="focus-toggle"><input type="checkbox" data-focus-mode> Focus Mode</label>
-            </article>
+    <main class="focus-workspace">
+        <section class="container focus-shell">
+            <aside class="focus-left-rail secondary-panel">
+                <label class="focus-callout focus-toggle">
+                    <input type="checkbox" data-focus-mode>
+                    <span class="focus-callout-icon" aria-hidden="true"></span>
+                    <span>
+                        <strong>Foco profundo</strong>
+                        <small>Distrações bloqueadas</small>
+                    </span>
+                </label>
 
-            <aside class="stack secondary-panel">
-                <article class="glass-card">
-                    <div class="section-header compact">
-                        <h2>Habitos ligados</h2>
-                        <p>Habitos que podem receber progresso deste metodo.</p>
+                <section class="method-panel">
+                    <p class="panel-kicker">Metodos</p>
+                    <form class="method-picker themed-picker" data-focus-method-form>
+                        <label class="timer-select-card method-control">
+                            <span class="method-icon method-icon--leaf" aria-hidden="true"></span>
+                            <span>
+                                <strong>Metodo ativo</strong>
+                                <small data-method-label>Metodo de foco</small>
+                            </span>
+                            <select name="method" data-focus-method></select>
+                        </label>
+                        <label class="timer-select-card method-control">
+                            <span class="method-icon method-icon--link" aria-hidden="true"></span>
+                            <span>
+                                <strong>Habito ligado</strong>
+                                <small>Sincroniza progresso</small>
+                            </span>
+                            <select name="habit" data-linked-habit></select>
+                        </label>
+                    </form>
+                    <div class="focus-mode-summary" data-focus-mode-summary></div>
+                </section>
+
+                <article class="tip-card">
+                    <span class="tip-mark" aria-hidden="true"></span>
+                    <strong>Dica Orenji</strong>
+                    <p>Grandes resultados começam com pequenos períodos de foco.</p>
+                </article>
+            </aside>
+
+            <section class="focus-center">
+                <article class="timer-stage glass-card" data-focus-shell>
+                    <div class="current-task-bar">
+                        <span class="task-glyph" aria-hidden="true"></span>
+                        <div class="task-copy">
+                            <span>Tarefa atual</span>
+                            <h1 data-current-task-title>Preparar bloco de estudo</h1>
+                            <p data-current-task-meta>Escolhe uma tarefa para este ciclo</p>
+                        </div>
+                        <a class="small-button edit-task-link" href="tasks.html">Alterar tarefa</a>
                     </div>
-                    <div class="linked-list" data-focus-linked-habits></div>
-                    <a class="button button-secondary wide-link" href="../Orenji%20Habit/dashboard.html">Abrir Habit</a>
+
+                    <div class="timer-orb" data-timer-ring style="--timer-progress: 94%;">
+                        <span class="timer-leaf timer-leaf--left" aria-hidden="true"></span>
+                        <span class="timer-leaf timer-leaf--right" aria-hidden="true"></span>
+                        <div class="timer-orb-inner">
+                            <button class="timer-method-button" type="button" data-timer-state>Pomodoro 25/5</button>
+                            <span class="cycle-label" data-cycle-label>Sessao 1 de 4</span>
+                            <span class="cycle-dots" data-cycle-dots aria-label="Ciclos do metodo"></span>
+                            <div class="timer-display" data-timer-display>25:00</div>
+                            <p class="timer-caption"><span class="leaf-mini" aria-hidden="true"></span>Tempo de foco</p>
+                            <span class="focus-pill">Foco profundo</span>
+                        </div>
+                    </div>
+
+                    <div class="timer-actions">
+                        <button class="button button-ghost timer-action-reset" data-timer-reset><span aria-hidden="true"></span>Reiniciar</button>
+                        <button class="button timer-action-start" data-timer-start><span aria-hidden="true"></span>Iniciar</button>
+                        <button class="button button-secondary timer-action-pause" data-timer-pause><span aria-hidden="true"></span>Pausar</button>
+                    </div>
+
+                    <div class="cycle-footer">
+                        <span><span class="leaf-mini" aria-hidden="true"></span>Ciclos hoje</span>
+                        <strong data-cycle-goal>Meta diária: 4 ciclos</strong>
+                    </div>
+                </article>
+
+                <section class="focus-stats secondary-panel">
+                    <article class="stat-card mini-stat">
+                        <span class="stat-icon stat-icon--flame" aria-hidden="true"></span>
+                        <span>Foco hoje</span>
+                        <strong data-focus-today>0 min</strong>
+                        <small>Meta: 3h 00m</small>
+                    </article>
+                    <article class="stat-card mini-stat">
+                        <span class="stat-icon stat-icon--target" aria-hidden="true"></span>
+                        <span>Ciclos concluidos</span>
+                        <strong data-cycle-count>0 / 4</strong>
+                        <small data-cycle-remaining>Começa o primeiro ciclo</small>
+                    </article>
+                    <article class="stat-card mini-stat">
+                        <span class="stat-icon stat-icon--trophy" aria-hidden="true"></span>
+                        <span>Sequência</span>
+                        <strong data-focus-streak>1 dia</strong>
+                        <small>Melhor: 18 dias</small>
+                    </article>
+                </section>
+            </section>
+
+            <aside class="focus-right-rail secondary-panel">
+                <article class="focus-panel todays-panel" data-today-sessions-panel>
+                    <header class="panel-header">
+                        <h2>Sessoes de hoje</h2>
+                        <span data-today-session-count>0 / 4</span>
+                    </header>
+                    <div class="today-session-list" data-today-session-list></div>
+                </article>
+
+                <article class="focus-panel tasks-panel" data-tasks-component data-tasks-app="focus" data-tasks-compact="true"></article>
+
+                <article class="focus-panel history-panel">
+                    <header class="panel-header">
+                        <h2>Historico de sessoes</h2>
+                        <a href="sessoes.html">Ver todas</a>
+                    </header>
+                    <div class="session-list" data-session-list></div>
                 </article>
             </aside>
         </section>
 
-        <section class="glass-card secondary-panel">
-            <div class="section-header compact">
-                <h2>Criar metodo de foco</h2>
-                <p>Define um ritmo proprio para estudar, trabalhar ou recuperar energia.</p>
-            </div>
-            <form class="custom-method-form" data-custom-focus-form>
-                <input type="text" name="name" placeholder="Nome do metodo" required>
-                <input type="number" name="focusMinutes" min="1" max="240" value="25" aria-label="Minutos de foco" required>
-                <input type="number" name="breakMinutes" min="0" max="120" value="5" aria-label="Minutos de pausa" required>
-                <input type="number" name="cycles" min="1" max="12" value="1" aria-label="Ciclos" required>
-                <button class="button" type="submit">Guardar metodo</button>
-            </form>
-        </section>
+        <section class="container focus-lower-grid secondary-panel">
+            <article class="glass-card linked-habits-card">
+                <div class="section-header compact">
+                    <h2>Habitos ligados</h2>
+                    <p>Habitos que podem receber progresso deste metodo.</p>
+                </div>
+                <div class="linked-list" data-focus-linked-habits></div>
+                <a class="button button-secondary wide-link" href="../Orenji%20Habit/dashboard.html">Abrir Habit</a>
+            </article>
 
-        <section class="glass-card secondary-panel">
-            <div class="section-header compact">
-                <h2>Sessoes concluidas</h2>
-                <p>Historico guardado localmente neste dispositivo.</p>
-            </div>
-            <div class="session-list" data-session-list></div>
+            <article class="glass-card custom-method-card">
+                <div class="section-header compact">
+                    <h2>Metodo personalizado</h2>
+                    <p>Define um ritmo proprio para estudar, trabalhar ou recuperar energia.</p>
+                </div>
+                <form class="custom-method-form" data-custom-focus-form>
+                    <input type="text" name="name" placeholder="Nome do metodo" required>
+                    <input type="number" name="focusMinutes" min="1" max="240" value="25" aria-label="Minutos de foco" required>
+                    <input type="number" name="breakMinutes" min="0" max="120" value="5" aria-label="Minutos de pausa" required>
+                    <input type="number" name="cycles" min="1" max="12" value="1" aria-label="Ciclos" required>
+                    <button class="button" type="submit">Guardar metodo</button>
+                </form>
+            </article>
         </section>
     </main>
+
+    <nav class="mobile-tabbar" aria-label="Navegacao movel">
+        <a href="index.html" data-mobile-nav="home">Inicio</a>
+        <a href="dashboard.html" data-mobile-nav="timer">Timer</a>
+        <a href="sessoes.html" data-mobile-nav="sessions">Sessoes</a>
+        <a href="tasks.html" data-mobile-nav="tasks">Tarefas</a>
+        <a href="configuracoes.html" data-mobile-nav="more">Mais</a>
+    </nav>
 
     <script src="../../Orenji-styles/js/theme.js"></script>
     <script src="js/theme.js"></script>
     <script src="../Orenji%20Shared/js/integration.js"></script>
+    <script src="../Orenji%20Shared/js/tasks.js"></script>
     <script src="js/data.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/settings.js"></script>

@@ -173,6 +173,7 @@ const OrenjiTasks = {
                 this.renderList(root, app, compact);
             });
         });
+        document.dispatchEvent(new CustomEvent('orenji-tasks-updated', { detail: { app } }));
     }
 };
 

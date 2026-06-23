@@ -3,6 +3,14 @@ const FocusUI = {
         return `${minutes} min`;
     },
 
+    formatDuration(minutes) {
+        const value = Number(minutes || 0);
+        if (value < 60) return `${value} min`;
+        const hours = Math.floor(value / 60);
+        const rest = value % 60;
+        return rest ? `${hours}h ${String(rest).padStart(2, '0')}m` : `${hours}h`;
+    },
+
     formatDateKey(date) {
         return date.toISOString().slice(0, 10);
     },
@@ -33,11 +41,96 @@ const FocusUI = {
             <article class="session-item">
                 <div>
                     <strong>${session.methodName || (session.type === 'focus' ? 'Foco' : 'Pausa')}</strong><br>
-                    <span>${new Date(session.completedAt).toLocaleDateString('pt-PT')}${session.linkedHabitId ? ' · habit ligado' : ''}</span>
+                    <span>${new Date(session.completedAt).toLocaleDateString('pt-PT')}${session.linkedHabitId ? ' · habito ligado' : ''}</span>
                 </div>
                 <strong>${this.formatMinutes(session.duration)}</strong>
             </article>
         `).join('');
+    },
+
+    renderCurrentTask() {
+        const title = document.querySelector('[data-current-task-title]');
+        const meta = document.querySelector('[data-current-task-meta]');
+        if (!title && !meta) return;
+
+        const tasks = window.OrenjiTasks
+            ? OrenjiTasks.getTasks('focus')
+            : FocusStorage.getTasks();
+        const activeTask = tasks
+            .filter(task => !task.completed)
+            .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))[0];
+
+        if (!activeTask) {
+            if (title) title.textContent = 'Criar primeira tarefa';
+            if (meta) meta.textContent = 'Escolhe um objetivo para este ciclo de foco';
+            return;
+        }
+
+        const habitName = window.OrenjiTasks?.habitName(activeTask.linkedHabitId);
+        if (title) title.textContent = activeTask.title;
+        if (meta) meta.textContent = habitName ? `Habito: ${habitName}` : 'Foco do ciclo atual';
+    },
+
+    renderTodaySessions(selectedMethod, completedCycles = 0) {
+        const list = document.querySelector('[data-today-session-list]');
+        const count = document.querySelector('[data-today-session-count]');
+        if (!list && !count) return;
+
+        const targetCycles = Number(selectedMethod?.cycles || 4);
+        const todayKey = this.formatDateKey(new Date());
+        const todaySessions = this.sessions().filter(session => (session.completedAt || '').slice(0, 10) === todayKey);
+        const savedCycles = todaySessions.length;
+        const doneCount = Math.min(targetCycles, savedCycles + completedCycles);
+        if (count) count.textContent = `${doneCount} / ${targetCycles}`;
+
+        if (!list) return;
+        list.innerHTML = Array.from({ length: targetCycles }, (_, index) => {
+            const session = todaySessions[index];
+            const number = index + 1;
+            const isDone = number <= doneCount;
+            const isCurrent = !isDone && number === doneCount + 1;
+            const time = session
+                ? new Date(session.completedAt).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })
+                : isCurrent ? 'Agora' : 'Planeado';
+            return `
+                <article class="today-session-item ${isDone ? 'is-done' : ''} ${isCurrent ? 'is-current' : ''}">
+                    <span class="today-session-marker">${isDone ? '✓' : number}</span>
+                    <span>${time}</span>
+                    <strong>${selectedMethod?.focusMinutes || 25}:00</strong>
+                </article>
+            `;
+        }).join('');
+    },
+
+    renderDashboardStats(selectedMethod, completedCycles = 0) {
+        const today = new Date();
+        const todayKey = this.formatDateKey(today);
+        const sessions = this.sessions();
+        const todaySessions = sessions.filter(session => (session.completedAt || '').slice(0, 10) === todayKey);
+        const todayMinutes = todaySessions.reduce((sum, session) => sum + Number(session.duration || 0), 0);
+        const targetCycles = Number(selectedMethod?.cycles || 4);
+        const cycleCount = Math.min(targetCycles, todaySessions.length + completedCycles);
+        const uniqueDays = [...new Set(sessions.map(session => (session.completedAt || '').slice(0, 10)).filter(Boolean))]
+            .sort()
+            .reverse();
+        let streak = uniqueDays.includes(todayKey) ? 1 : 0;
+        let cursor = new Date(today);
+        cursor.setDate(cursor.getDate() - 1);
+        while (uniqueDays.includes(this.formatDateKey(cursor))) {
+            streak += 1;
+            cursor.setDate(cursor.getDate() - 1);
+        }
+
+        const focusToday = document.querySelector('[data-focus-today]');
+        const cycleCountTarget = document.querySelector('[data-cycle-count]');
+        const cycleRemaining = document.querySelector('[data-cycle-remaining]');
+        const streakTarget = document.querySelector('[data-focus-streak]');
+        const goalTarget = document.querySelector('[data-cycle-goal]');
+        if (focusToday) focusToday.textContent = this.formatDuration(todayMinutes);
+        if (cycleCountTarget) cycleCountTarget.textContent = `${cycleCount} / ${targetCycles}`;
+        if (cycleRemaining) cycleRemaining.textContent = cycleCount >= targetCycles ? 'Meta concluida' : `Faltam ${targetCycles - cycleCount} ciclos`;
+        if (streakTarget) streakTarget.textContent = `${Math.max(1, streak)} dia${Math.max(1, streak) === 1 ? '' : 's'}`;
+        if (goalTarget) goalTarget.textContent = `Meta diaria: ${targetCycles} ciclo${targetCycles === 1 ? '' : 's'}`;
     },
 
     renderSessionSummary() {
@@ -131,12 +224,31 @@ const FocusUI = {
         list.querySelectorAll('[data-task-remove]').forEach(button => button.addEventListener('click', () => onRemove(button.dataset.taskRemove)));
     },
 
-    setTimer(seconds, timerTitle) {
+    setTimer(seconds, timerTitle, totalSeconds, cycleState = {}) {
         const display = document.querySelector('[data-timer-display]');
         const state = document.querySelector('[data-timer-state]');
+        const ring = document.querySelector('[data-timer-ring]');
+        const cycleLabel = document.querySelector('[data-cycle-label]');
+        const cycleDots = document.querySelector('[data-cycle-dots]');
         const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
         const secs = String(seconds % 60).padStart(2, '0');
         if (display) display.textContent = `${mins}:${secs}`;
         if (state) state.textContent = timerTitle;
+        if (ring && totalSeconds) {
+            const percent = Math.max(8, Math.min(94, (Number(seconds) / Number(totalSeconds)) * 94));
+            ring.style.setProperty('--timer-progress', `${percent}%`);
+        }
+        if (cycleLabel) {
+            const current = Math.min(Number(cycleState.completedCycles || 0) + 1, Number(cycleState.totalCycles || 1));
+            cycleLabel.textContent = `Sessao ${current} de ${cycleState.totalCycles || 1}`;
+        }
+        if (cycleDots) {
+            const total = Number(cycleState.totalCycles || 1);
+            const completed = Number(cycleState.completedCycles || 0);
+            cycleDots.innerHTML = Array.from({ length: total }, (_, index) => {
+                const className = index < completed ? 'is-done' : index === completed ? 'is-current' : '';
+                return `<span class="cycle-dot ${className}"></span>`;
+            }).join('');
+        }
     }
 };

@@ -32,6 +32,26 @@ function initFocusDashboard() {
     const methodLabel = document.querySelector('[data-method-label]');
     const focusModeSummary = document.querySelector('[data-focus-mode-summary]');
 
+    const totalSeconds = () => Math.max(1, (mode === 'focus' ? selectedMethod.focusMinutes : selectedMethod.breakMinutes) * 60);
+
+    const updateTimerDisplay = () => {
+        FocusUI.setTimer(
+            remaining,
+            mode === 'focus' ? selectedMethod.name : 'Pausa curta',
+            totalSeconds(),
+            {
+                completedCycles,
+                totalCycles: Number(selectedMethod.cycles || 1)
+            }
+        );
+    };
+
+    const renderDashboardPanels = () => {
+        FocusUI.renderCurrentTask();
+        FocusUI.renderTodaySessions(selectedMethod, completedCycles);
+        FocusUI.renderDashboardStats(selectedMethod, completedCycles);
+    };
+
     const stopTimer = () => {
         clearInterval(intervalId);
         intervalId = null;
@@ -42,8 +62,9 @@ function initFocusDashboard() {
         mode = 'focus';
         completedCycles = 0;
         remaining = selectedMethod.focusMinutes * 60;
-        FocusUI.setTimer(remaining, selectedMethod.name);
+        updateTimerDisplay();
         renderFocusModeSummary();
+        renderDashboardPanels();
     };
 
     const saveCompletedSession = () => {
@@ -64,6 +85,7 @@ function initFocusDashboard() {
         FocusUI.renderSessions();
         FocusUI.renderSessionSummary();
         renderLinkedHabits();
+        renderDashboardPanels();
     };
 
     const tick = () => {
@@ -84,7 +106,8 @@ function initFocusDashboard() {
             }
             stopTimer();
         }
-        FocusUI.setTimer(remaining, selectedMethod.name);
+        updateTimerDisplay();
+        renderDashboardPanels();
     };
 
     function renderMethodOptions() {
@@ -93,7 +116,7 @@ function initFocusDashboard() {
             <option value="${method.id}">${method.name} · ${method.focusMinutes}/${method.breakMinutes} · ${method.cycles} ciclo${Number(method.cycles) === 1 ? '' : 's'}</option>
         `).join('');
         methodSelect.value = selectedMethod.id;
-        if (methodLabel) methodLabel.textContent = 'Método de foco:';
+        if (methodLabel) methodLabel.textContent = selectedMethod.name;
     }
 
     function renderHabitOptions() {
@@ -147,9 +170,11 @@ function initFocusDashboard() {
         resetTimer();
         renderLinkedHabits();
         renderFocusModeSummary();
+        renderDashboardPanels();
     });
     linkedHabitSelect?.addEventListener('change', () => {
         renderFocusModeSummary();
+        renderDashboardPanels();
     });
     document.querySelector('[data-focus-mode]')?.addEventListener('change', event => {
         document.body.classList.toggle('focus-mode', event.target.checked);
@@ -177,14 +202,21 @@ function initFocusDashboard() {
         renderMethodOptions();
         resetTimer();
         renderLinkedHabits();
+        renderDashboardPanels();
     });
 
     renderMethodOptions();
     renderHabitOptions();
     renderLinkedHabits();
-    FocusUI.setTimer(remaining, selectedMethod.name);
+    updateTimerDisplay();
     FocusUI.renderSessions();
     FocusUI.renderSessionSummary();
     renderFocusModeSummary();
     window.OrenjiTasks?.mountAll();
+    renderDashboardPanels();
+    document.addEventListener('orenji-tasks-updated', event => {
+        if (!event.detail?.app || event.detail.app === 'focus') {
+            renderDashboardPanels();
+        }
+    });
 }

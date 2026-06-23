@@ -4,7 +4,7 @@ const FocusSettings = {
         if (!form) return;
         const settings = FocusStorage.getSettings();
         form.studentName.value = settings.studentName || '';
-        form.theme.value = settings.theme || 'dark';
+        form.theme.value = settings.theme || 'light';
         form.themeSync.checked = isThemeSyncEnabled();
         form.addEventListener('submit', event => {
             event.preventDefault();

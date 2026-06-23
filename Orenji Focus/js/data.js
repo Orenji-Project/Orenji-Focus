@@ -8,6 +8,6 @@ const FocusInitialData = {
     ],
     settings: {
         studentName: 'Orenji Student',
-        theme: 'dark'
+        theme: 'light'
     }
 };

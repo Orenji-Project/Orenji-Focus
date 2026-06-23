@@ -69,11 +69,11 @@ const FocusTheme = {
         const nextTheme = theme === 'light'
             ? {
                 ...current,
-                background: '#f7f4e9',
-                header: '#fff8e8',
-                primary: '#f7941d',
-                primaryStrong: '#e56f13',
-                accent: '#6fa24a',
+                background: '#fafcf8',
+                header: '#ffffff',
+                primary: '#4f8f3a',
+                primaryStrong: '#377a2c',
+                accent: '#ff7a00',
                 danger: '#d9483b',
                 warning: '#d99a19',
                 texture: 'solid',
@@ -82,15 +82,15 @@ const FocusTheme = {
             }
             : {
                 ...current,
-                background: '#020617',
-                header: '#0f172a',
-                primary: '#5b96ff',
-                primaryStrong: '#3b82f6',
-                accent: '#22c55e',
+                background: '#17120d',
+                header: '#211a14',
+                primary: '#6fae58',
+                primaryStrong: '#5f963e',
+                accent: '#ff8a1f',
                 danger: '#f43f5e',
                 warning: '#facc15',
-                texture: 'glass',
-                shape: 'rounded',
+                texture: 'soft',
+                shape: 'soft',
                 shadow: 'soft'
             };
 
